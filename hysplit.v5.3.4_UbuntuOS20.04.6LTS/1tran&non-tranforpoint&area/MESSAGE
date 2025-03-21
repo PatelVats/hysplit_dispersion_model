@@ -1,0 +1,224 @@
+ Simulation Date (CCYYMMDD): 20250321
+ Simulation Time (HHMMSS.S): 103111.279
+ NOTICE metini: MODEL_ID not AWRF in data (kg,kt)           1           1
+ Setting DREC(KG,KT)%WVERT=.FALSE. to use default vertical interpolation!
+  NOTICE metini: turbulence undefined (kblt=0); setting to Kantha-Clayson
+ 
+   KG   KT DATA  SIZE   NX   NY
+    1    1 GFSQ  27.8 1440  721
+ 
+  NOTICE   main: number meteo grids and times -            1           1
+ Initial call to rdizsg to retrieve nlvl
+ rdizsg: zsg model levels not changed
+  
+ HYSPLIT
+ HYSPLIT version: hysplit.v5.3.4
+ Last Changed Date: 2025-01-27
+ ------------- Start Namelist configuration -------------------
+ Internal grid parameters (nlvl,aa,bb,cc):           45   5.00000000       5.00000000       0.00000000    
+&SETUP
+ INITD=0          ,
+ KHMAX=9999       ,
+ NUMPAR=2500       ,
+ MAXPAR=1000000    ,
+ MAXDIM=1          ,
+ QCYCLE=  1.00000000    ,
+ P10F=  1.00000000    ,
+ KMIXD=0          ,
+ KMIX0=150        ,
+ FRME= 0.100000001    ,
+ FRMR=  0.00000000    ,
+ KRND=6          ,
+ DELT=  0.00000000    ,
+ KDEF=0          ,
+ TKERD= 0.180000007    ,
+ TKERN= 0.180000007    ,
+ NDUMP=0          ,
+ NCYCL=0          ,
+ TRATIO= 0.750000000    ,
+ ISOT=-99        ,
+ MGMIN=10         ,
+ KMSL=0          ,
+ NSTR=0          ,
+ MHRS=0          ,
+ NVER=0          ,
+ CPACK= 99*1          ,
+ CMASS=0          ,
+ ICHEM=0          ,
+ EFILE="EMITIMES                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ",
+ VSCALE=  200.000000    ,
+ VSCALES=  5.00000000    ,
+ VSCALEU=  200.000000    ,
+ K10M=1          ,
+ VDIST="VMSDIST                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         ",
+ KHINP=0          ,
+ PINBC="PARINBC                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         ",
+ TOUT=0          ,
+ TM_PRES=0          ,
+ TM_TPOT=0          ,
+ TM_TAMB=0          ,
+ TM_RAIN=0          ,
+ TM_MIXD=0          ,
+ TM_TERR=0          ,
+ HSCALE=  10800.0000    ,
+ TM_DSWF=0          ,
+ TM_RELH=0          ,
+ TM_SPHU=0          ,
+ TM_MIXR=0          ,
+ DXF=  1.00000000    ,
+ DYF=  1.00000000    ,
+ DZF=  9.99999978E-03,
+ PINPF="PARINIT                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         ",
+ POUTF="PARDUMP                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         ",
+ NINIT=1          ,
+ KAGL=0          ,
+ KPUFF=0          ,
+ KBLT=0          ,
+ KZMIX=0          ,
+ TVMIX=  1.00000000    ,
+ KBLS=1          ,
+ CONAGE=24         ,
+ KSPL=1          ,
+ FRHS=  1.00000000    ,
+ FRVS=  9.99999978E-03,
+ FRTS= 0.100000001    ,
+ FRHMAX=  3.00000000    ,
+ SPLITF=  1.00000000    ,
+ MESSG="MESSAGE                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         ",
+ NBPTYP=1          ,
+ RHB=80         ,
+ RHT=60         ,
+ OUTDT=0          ,
+ DECAY=1          ,
+ KWET=1          ,
+ KRAND=2          ,
+ CAPEMIN= -1.00000000    ,
+ TKEMIN=  1.00000005E-03,
+ URATIO=  5.87330008    ,
+ WBWR=  0.00000000    ,
+ WBWF=  0.00000000    ,
+ WBBH=  0.00000000    ,
+ SEED=0          ,
+ GEMAGE=48         ,
+ VINIT=1          ,
+ VBUG=  0.00000000    ,
+ CMTFN="                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ",
+ RANDOM=0          ,
+ TLFRAC= 0.100000001    ,
+ NTURB=0          ,
+ VEGHT= 0.500000000    ,
+ ZICONTROLTF=0          ,
+ WINDERRTF=0          ,
+ IVMAX=20         ,
+ VARSIWANT="TIME","INDX","LONG","LATI","ZAGL",
+ "SIGW","TLGR","ZSFC","TEMP","SAMT","FOOT",
+ "SHTF","DMAS","DENS","RHFR","SPHU","DSWF",
+ "WOUT","MLHT","PRES", 80*"    ",
+ IDSP=1          ,
+ WVERT=T,
+ PLRISE=1          ,
+ AREA=0          ,
+ TERRFLG=0          ,
+ /
+ ------------- End Namelist configuration -------------------
+  
+  NOTICE   main: pollutant initialization flags
+       Grav settling -  T
+  NOTICE   main: meteorological data flags
+     Ten meter wind -  T
+     Two meter temp -  T
+     Exchange coeff -  F
+          Heat flux -  T
+      Momentum flux -  T
+  Velocity variance -  F
+       3D TKE field -  F
+     Down shortwave -  T
+  Friction velocity -  T
+      Friction temp -  F
+     Terrain height -  T
+   Surface pressure -  T
+  Mixed layer depth -  T
+  Convective mixing -  F
+  Profile averaging -            0
+   Stability method -            1
+  Horizontal mixing -            0
+  PBL mixing scheme -            2
+   Free Trop Mixing -    1.00000000    
+  Precip accumulate -          360
+ ------------- Start computation messages -------------------
+  NOTICE advrng: (kg ,xyr,xy1) -  1   22   22  212  451
+  NOTICE metpos: (mtime,ftime) -     65857860           0
+  NOTICE metpos: (mtime,ftime) -     65858040           0
+  NOTICE advpnt: (kg,nx,ny,nz) -     1   22   22   45
+  NOTICE sfcinp: reading ASCDATA.CFG
+  NOTICE sfcinp: record terminator = LF
+  NOTICE metgrd: (kg, xyr,xy1) -     1   22   22  212  451
+  NOTICE metinp: GFSQ 1 1746   22   22  212  451 65857860 25  3 20 15
+  NOTICE metinp: GFSQ 1 2095   22   22  212  451 65858040 25  3 20 18
+  NOTICE advrng: (kg ,xyr,xy1) -  1   22   22  212  451
+  NOTICE   main: Initial time step (min)            1
+  NOTICE emsmat: opened emission file - EMITIMES
+ WARNING emsmat: emission file has fewer locations than CONTROL
+ Emission file:            3    CONTROL file:            3
+  NOTICE emsmat: emissions updated -           25           3          20          17
+  NOTICE   main:            1    65857981           9   4.97640558E-02
+  NOTICE   main:            1    65857982          18   9.92932767E-02
+  NOTICE   main:            1    65857983          27  0.148640737    
+  NOTICE   main:            1    65857984          36  0.197755277    
+  NOTICE   main:            1    65857985          45  0.246715456    
+  NOTICE   main:            1    65857986          54  0.295573801    
+  NOTICE   main:            1    65857987          63  0.344304532    
+  NOTICE   main:            1    65857988          72  0.392881185    
+  NOTICE   main:            1    65857989          81  0.441382408    
+  NOTICE   main:            1    65857990          90  0.489782304    
+  NOTICE   main:            1    65857991          99  0.538030326    
+  NOTICE   main:            1    65857992         108  0.586228251    
+  NOTICE   main:            1    65857993         117  0.634225249    
+  NOTICE   main:            1    65857994         126  0.682197392    
+  NOTICE   main:            1    65857995         135  0.730070353    
+  NOTICE   main:            1    65857996         144  0.777893662    
+  NOTICE   main:            1    65857997         153  0.825614512    
+  NOTICE   main:            1    65857998         162  0.873212636    
+  NOTICE   main:            1    65857999         171  0.920789421    
+  NOTICE   main:            1    65858000         180  0.968113720    
+  NOTICE   main:            1    65858001         189   1.01521301    
+  NOTICE   main:            1    65858002         198   1.06219244    
+  NOTICE   main:            1    65858003         207   1.10930133    
+  NOTICE   main:            1    65858004         216   1.15621400    
+  NOTICE   main:            1    65858005         225   1.20310378    
+  NOTICE   main:            1    65858006         234   1.24974406    
+  NOTICE   main:            1    65858007         243   1.29636216    
+  NOTICE   main:            1    65858008         252   1.34293282    
+  NOTICE   main:            1    65858009         261   1.38916063    
+  NOTICE   main:            1    65858010         270   1.43516576    
+  NOTICE   main:            1    65858011         279   1.48119986    
+  NOTICE   main:            1    65858012         288   1.52715957    
+  NOTICE   main:            1    65858013         297   1.57307923    
+  NOTICE   main:            1    65858014         306   1.61915326    
+  NOTICE   main:            1    65858015         315   1.66490614    
+  NOTICE   main:            1    65858016         324   1.71075916    
+  NOTICE   main:            1    65858017         333   1.75654030    
+  NOTICE   main:            1    65858018         342   1.80197978    
+  NOTICE   main:            1    65858019         351   1.84732211    
+  NOTICE   main:            1    65858020         360   1.89274800    
+  NOTICE   main:            1    65858021         369   1.93791008    
+  NOTICE   main:            1    65858022         378   1.98267710    
+  NOTICE   main:            1    65858023         387   2.02738190    
+  NOTICE   main:            1    65858024         396   2.07204962    
+  NOTICE   main:            1    65858025         405   2.11694789    
+  NOTICE   main:            1    65858026         414   2.16185260    
+  NOTICE   main:            1    65858027         423   2.20658731    
+  NOTICE   main:            1    65858028         432   2.25096726    
+  NOTICE   main:            1    65858029         441   2.29508734    
+  NOTICE   main:            1    65858030         450   2.33914757    
+  NOTICE   main:            1    65858031         459   2.38310933    
+  NOTICE   main:            1    65858032         468   2.42697930    
+  NOTICE   main:            1    65858033         477   2.47097659    
+  NOTICE   main:            1    65858034         486   2.51493883    
+  NOTICE   main:            1    65858035         495   2.55865502    
+  NOTICE   main:            1    65858036         504   2.60218406    
+  NOTICE   main:            1    65858037         513   2.64540648    
+  NOTICE   main:            1    65858038         522   2.68849897    
+  NOTICE   main:            1    65858039         531   2.73150134    
+  NOTICE condsk:  1 output at    3  20  18   0
+  NOTICE   main:            1    65858040         540   2.77450681    

@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" 
+     xmlns:gx="http://www.google.com/kml/ext/2.2">
+<Document>
+ <name>NOAA HYSPLIT Trajectory ps</name>
+ <open>1</open>
+ <LookAt>
+  <gx:TimeStamp>
+   <when>2025-03-20T12:00:00Z</when>
+  </gx:TimeStamp>
+  <longitude>  55.3350</longitude>
+  <latitude>  25.2670</latitude>
+  <altitude>0</altitude>
+  <tilt>0</tilt>
+  <range>13700</range>
+  <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+ </LookAt>
+ <Style id="traj1">
+  <IconStyle>
+   <scale>0.6</scale>
+   <Icon>
+    <href>redball.png</href>
+   </Icon>
+  </IconStyle>
+  <LineStyle>
+   <color>ff0000ff</color>
+   <width>4</width>
+  </LineStyle>
+  <PolyStyle>
+   <color>7f0000ff</color>
+  </PolyStyle>
+ </Style>
+ <Style id="traj2">
+  <IconStyle>
+   <scale>0.6</scale>
+   <Icon>
+    <href>blueball.png</href>
+   </Icon>
+  </IconStyle>
+  <LineStyle>
+   <color>ffff0000</color>
+   <width>4</width>
+  </LineStyle>
+  <PolyStyle>
+   <color>7fff0000</color>
+  </PolyStyle>
+ </Style>
+ <Style id="traj3">
+  <IconStyle>
+   <scale>0.6</scale>
+   <Icon>
+    <href>greenball.png</href>
+   </Icon>
+  </IconStyle>
+  <LineStyle>
+   <color>ff00ff00</color>
+   <width>4</width>
+  </LineStyle>
+  <PolyStyle>
+   <color>7f00ff00</color>
+  </PolyStyle>
+ </Style>
+ <ScreenOverlay>
+  <name>HYSPLIT Information</name>
+   <description>NOAA ARL HYSPLIT Model  http://www.arl.noaa.gov/HYSPLIT_info.php</description>
+  <Icon>
+   <href>logocon.gif</href>
+  </Icon>
+  <overlayXY x="1" y="1" xunits="fraction" yunits="fraction"/>
+  <screenXY x="1" y="1" xunits="fraction" yunits="fraction"/>
+  <rotationXY x="0" y="0" xunits="fraction" yunits="fraction"/>
+  <size x="0" y="0" xunits="pixels" yunits="pixels"/>
+ </ScreenOverlay>
+ <ScreenOverlay>
+  <name>NOAA</name>
+  <Snippet maxLines="0"></Snippet>
+   <description>National Oceanic and Atmospheric Administration  http://www.noaa.gov</description>
+  <Icon>
+   <href>noaa_google.gif</href>
+  </Icon>
+  <overlayXY x="0" y="1" xunits="fraction" yunits="fraction"/>
+  <screenXY x="0" y="1" xunits="fraction" yunits="fraction"/>
+  <rotationXY x="0" y="0" xunits="fraction" yunits="fraction"/>
+  <size x="0" y="0" xunits="pixels" yunits="pixels"/>
+ </ScreenOverlay>
+ <Folder>
+  <name>NOAA NWS kml Weather Data</name>
+  <visibility>0</visibility>
+  <description>http://weather.gov/gis/  Click on the link 
+to access weather related overlays from the National Weather Service.
+  </description>
+ </Folder>
+ <Folder>
+  <name>NOAA NESDIS kml Smoke/Fire Data</name>
+  <visibility>0</visibility>
+  <description>http://www.ssd.noaa.gov/PS/FIRE/hms.html  Click on the link 
+to access wildfire smoke overlays from NOAA NESDIS.
+  </description>
+ </Folder>
+ <Folder>
+  <name>EPA AIRNow Air Quality Index (AQI)</name>
+  <visibility>0</visibility>
+  <description>http://www.epa.gov/airnow/today/airnow.kml  Click on the link 
+to access AQI data from EPA. The results will appear in the list below.
+  </description>
+ </Folder>
+ <Folder>
+  <name>      7.0 m AGL Trajectory</name>
+  <open>1</open>
+  <Placemark>
+   <name>      7.0 m AGL Trajectory</name>
+   <LookAt>
+    <gx:TimeStamp>
+     <when>2025-03-20T12:00:00Z</when>
+    </gx:TimeStamp>
+    <longitude>  55.3350</longitude>
+    <latitude> 25.2670</latitude>
+    <heading>0.0</heading>
+    <tilt>0.0</tilt>
+    <range>2000000.0</range>
+    <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+   </LookAt>
+   <styleUrl>#traj1</styleUrl>
+   <LineString>
+    <extrude>1</extrude>
+    <altitudeMode>relativeToGround</altitudeMode>
+    <coordinates>
+         55.3350,25.2670,7.0
+         55.3670,25.4750,.0
+         55.4010,25.6540,.0
+         55.4380,25.7990,.0
+         55.4780,25.9080,.0
+         55.5240,25.9830,.0
+         55.5710,26.0360,.0
+    </coordinates>
+   </LineString>
+  </Placemark>
+  <Placemark>
+   <name></name>
+   <visibility>1</visibility>
+   <description><![CDATA[<pre>Start Time
+03/20/2025 1200 UTC
+LAT:   25.2670 LON:   55.3350 Hght(m AGL):      7.0</pre>]]>
+   </description>
+   <styleUrl>#traj1</styleUrl>
+   <Point>
+    <altitudeMode>relativeToGround</altitudeMode>
+    <coordinates>55.3350,25.2670,7.0</coordinates>
+   </Point>
+  </Placemark>
+  <Folder>
+   <name>Trajectory Endpoints</name>
+   <visibility>0</visibility>
+   <Placemark>
+    <name>03/20/2025 1100 UTC</name>
+    <visibility>1</visibility>
+    <Snippet maxLines="0"></Snippet>
+    <description><![CDATA[<pre>HYSPLIT  -1. hour endpoint
+      
+03/20/2025 1100 UTC
+LAT:   25.4750 LON:   55.3670 Hght(m AGL):      0.0</pre>]]>
+    </description>
+    <LookAt>
+     <longitude>  55.3670</longitude>
+     <latitude> 25.4750</latitude>
+     <heading>0.0</heading>
+     <tilt>60.0</tilt>
+     <range>20000.0</range>
+    </LookAt>
+    <TimeSpan>
+     <end>2025-03-20T12:00:00Z</end>
+     <begin>2025-03-20T11:00:00Z</begin>
+    </TimeSpan>
+    <styleUrl>#traj1</styleUrl>
+    <Point>
+     <altitudeMode>relativeToGround</altitudeMode>
+     <coordinates>55.3670,25.4750,.0</coordinates>
+    </Point>
+   </Placemark>
+   <Placemark>
+    <name>03/20/2025 1000 UTC</name>
+    <visibility>1</visibility>
+    <Snippet maxLines="0"></Snippet>
+    <description><![CDATA[<pre>HYSPLIT  -2. hour endpoint
+      
+03/20/2025 1000 UTC
+LAT:   25.6540 LON:   55.4010 Hght(m AGL):      0.0</pre>]]>
+    </description>
+    <LookAt>
+     <longitude>  55.4010</longitude>
+     <latitude> 25.6540</latitude>
+     <heading>0.0</heading>
+     <tilt>60.0</tilt>
+     <range>20000.0</range>
+    </LookAt>
+    <TimeSpan>
+     <end>2025-03-20T11:00:00Z</end>
+     <begin>2025-03-20T10:00:00Z</begin>
+    </TimeSpan>
+    <styleUrl>#traj1</styleUrl>
+    <Point>
+     <altitudeMode>relativeToGround</altitudeMode>
+     <coordinates>55.4010,25.6540,.0</coordinates>
+    </Point>
+   </Placemark>
+   <Placemark>
+    <name>03/20/2025 0900 UTC</name>
+    <visibility>1</visibility>
+    <Snippet maxLines="0"></Snippet>
+    <description><![CDATA[<pre>HYSPLIT  -3. hour endpoint
+      
+03/20/2025 0900 UTC
+LAT:   25.7990 LON:   55.4380 Hght(m AGL):      0.0</pre>]]>
+    </description>
+    <LookAt>
+     <longitude>  55.4380</longitude>
+     <latitude> 25.7990</latitude>
+     <heading>0.0</heading>
+     <tilt>60.0</tilt>
+     <range>20000.0</range>
+    </LookAt>
+    <TimeSpan>
+     <end>2025-03-20T10:00:00Z</end>
+     <begin>2025-03-20T09:00:00Z</begin>
+    </TimeSpan>
+    <styleUrl>#traj1</styleUrl>
+    <Point>
+     <altitudeMode>relativeToGround</altitudeMode>
+     <coordinates>55.4380,25.7990,.0</coordinates>
+    </Point>
+   </Placemark>
+   <Placemark>
+    <name>03/20/2025 0800 UTC</name>
+    <visibility>1</visibility>
+    <Snippet maxLines="0"></Snippet>
+    <description><![CDATA[<pre>HYSPLIT  -4. hour endpoint
+      
+03/20/2025 0800 UTC
+LAT:   25.9080 LON:   55.4780 Hght(m AGL):      0.0</pre>]]>
+    </description>
+    <LookAt>
+     <longitude>  55.4780</longitude>
+     <latitude> 25.9080</latitude>
+     <heading>0.0</heading>
+     <tilt>60.0</tilt>
+     <range>20000.0</range>
+    </LookAt>
+    <TimeSpan>
+     <end>2025-03-20T09:00:00Z</end>
+     <begin>2025-03-20T08:00:00Z</begin>
+    </TimeSpan>
+    <styleUrl>#traj1</styleUrl>
+    <Point>
+     <altitudeMode>relativeToGround</altitudeMode>
+     <coordinates>55.4780,25.9080,.0</coordinates>
+    </Point>
+   </Placemark>
+   <Placemark>
+    <name>03/20/2025 0700 UTC</name>
+    <visibility>1</visibility>
+    <Snippet maxLines="0"></Snippet>
+    <description><![CDATA[<pre>HYSPLIT  -5. hour endpoint
+      
+03/20/2025 0700 UTC
+LAT:   25.9830 LON:   55.5240 Hght(m AGL):      0.0</pre>]]>
+    </description>
+    <LookAt>
+     <longitude>  55.5240</longitude>
+     <latitude> 25.9830</latitude>
+     <heading>0.0</heading>
+     <tilt>60.0</tilt>
+     <range>20000.0</range>
+    </LookAt>
+    <TimeSpan>
+     <end>2025-03-20T08:00:00Z</end>
+     <begin>2025-03-20T07:00:00Z</begin>
+    </TimeSpan>
+    <styleUrl>#traj1</styleUrl>
+    <Point>
+     <altitudeMode>relativeToGround</altitudeMode>
+     <coordinates>55.5240,25.9830,.0</coordinates>
+    </Point>
+   </Placemark>
+   <Placemark>
+    <name>03/20/2025 0600 UTC</name>
+    <visibility>1</visibility>
+    <Snippet maxLines="0"></Snippet>
+    <description><![CDATA[<pre>HYSPLIT  -6. hour endpoint
+      
+03/20/2025 0600 UTC
+LAT:   26.0360 LON:   55.5710 Hght(m AGL):      0.0</pre>]]>
+    </description>
+    <LookAt>
+     <longitude>  55.5710</longitude>
+     <latitude> 26.0360</latitude>
+     <heading>0.0</heading>
+     <tilt>60.0</tilt>
+     <range>20000.0</range>
+    </LookAt>
+    <TimeSpan>
+     <end>2025-03-20T07:00:00Z</end>
+     <begin>2025-03-20T06:00:00Z</begin>
+    </TimeSpan>
+    <styleUrl>#traj1</styleUrl>
+    <Point>
+     <altitudeMode>relativeToGround</altitudeMode>
+     <coordinates>55.5710,26.0360,.0</coordinates>
+    </Point>
+   </Placemark>
+  </Folder>
+ </Folder>
+</Document>
+</kml>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HYSPLIT Parameters</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
+        label { display: block; margin-top: 10px; }
+        input, button { margin-top: 5px; }
+        button { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>HYSPLIT Parameters</h1>
+    <form id="hysplitForm">
+        <label for="startTime">Start Time (YYYY,MM,DD,HH):</label>
+        <input type="text" id="startTime" required placeholder="2023,5,1,0">
+
+        <label for="location">Location (lat,lon,height):</label>
+        <input type="text" id="location" required placeholder="40.7128,-74.0060,10.0">
+
+        <label for="runTime">Run Time (hours):</label>
+        <input type="number" id="runTime" required>
+
+
+        <button type="submit">Run Model</button>
+    </form>
+
+    <pre id="output"></pre>
+
+    <script src="script.js"></script>
+</body>
+</html>
