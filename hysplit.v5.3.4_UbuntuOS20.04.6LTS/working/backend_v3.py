@@ -9,10 +9,11 @@ from datetime import datetime, timedelta
 app = FastAPI()
 
 class HysplitInput(BaseModel):
+    compute: str  # New field to determine computation type
     start_time: tuple
     num_locations: int
     locations: list
-    run_time: int  # Total run time in hours
+    run_time: int
     vert_motion_method: int
     top_of_model: float
     num_met_files: int
@@ -106,6 +107,30 @@ def generate_control_file(data: HysplitInput, output_file="CONTROL", current_tim
         file.write(f"{data.resuspension_factor:.1f}\n")
 
     shutil.copy(output_file, "default_conc")
+
+def generate_traj_control_file(data: HysplitInput, output_file="CONTROL", sim_number=1):
+    with open(output_file, "w") as file:
+        file.write(f"{data.start_time[0]:02d} {data.start_time[1]:02d} {data.start_time[2]:02d} {data.start_time[3]:02d}\n")
+        file.write(f"{len(data.locations)}\n")
+        
+        for loc in data.locations:
+            if is_point_source(loc):
+                file.write(f"{loc[0]:.6f} {loc[1]:.6f} {loc[2]:.1f}\n")
+        
+        file.write(f"{data.run_time}\n")
+        file.write(f"{data.vert_motion_method}\n")
+        file.write(f"{data.top_of_model:.1f}\n")
+        file.write(f"{data.num_met_files}\n")
+        
+        for i in range(data.num_met_files):
+            file.write(f"{data.met_dir}\n")
+            file.write(f"{data.met_filename}\n")
+        
+        file.write(f"{data.output_dir}\n")
+        file.write(f"tdump\n")
+
+    # Copy the content to default_traj file
+    shutil.copy(output_file, "default_traj")
 
 def create_ascdata_cfg(output_file="ASCDATA.CFG"):
     content = """\
@@ -254,21 +279,25 @@ def run_hysplit(sim_number):
     
 @app.post("/run_hysplit/")
 async def run_hysplit_model(data: HysplitInput):
+    if data.compute.lower() == "conc":
+        return await run_dispersion_model(data)
+    elif data.compute.lower() == "traj":
+        return await run_trajectory_model(data)
+    else:
+        raise HTTPException(status_code=400, detail="Invalid compute type. Must be 'conc' or 'traj'.")
+
+async def run_dispersion_model(data: HysplitInput):
     create_ascdata_cfg()
 
-    # Create EMITIMES file if there are area sources
     emitimes_created = create_emitimes(data)
 
-    # Create SETUP.CFG only if EMITIMES was created
     if emitimes_created:
         create_setup_cfg()
 
     if data.transient_mode:
-        # For transient mode, run a single simulation for the entire run_time
         generate_control_file(data, run_time=data.run_time, sim_number=1)
         run_hysplit(1)
     else:
-        # For non-transient mode, run multiple simulations
         start_datetime = datetime(2000 + data.start_time[0], data.start_time[1], data.start_time[2], data.start_time[3])
         end_datetime = start_datetime + timedelta(hours=data.run_time)
         interval_timedelta = timedelta(minutes=data.interval)
@@ -279,7 +308,6 @@ async def run_hysplit_model(data: HysplitInput):
             current_time = [current_datetime.year % 100, current_datetime.month, current_datetime.day, current_datetime.hour]
             run_time = min(data.interval // 60, (end_datetime - current_datetime).total_seconds() // 3600)
             
-            # Update EMITIMES for each simulation if area sources exist
             if emitimes_created:
                 create_emitimes(data, current_time=current_time, duration=run_time)
             
@@ -289,7 +317,29 @@ async def run_hysplit_model(data: HysplitInput):
             current_datetime += interval_timedelta
             sim_number += 1
 
-    return {"message": "HYSPLIT model run successfully."}
+    return {"message": "HYSPLIT dispersion model run successfully."}
+
+async def run_trajectory_model(data: HysplitInput):
+    generate_traj_control_file(data)
+    
+    try:
+        subprocess.run("../exec/hyts_std", shell=True, check=True)
+
+        subprocess.run(f"../exec/trajplot -itdump -a3", shell=True, check=True)
+        
+        # You may want to add additional post-processing steps here
+        # For example, plotting the trajectory or converting the output to a specific format
+        
+    except subprocess.CalledProcessError as e:
+        raise HTTPException(status_code=500, detail=f"Error while running trajectory model: {e}")
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="One of the required files or programs is missing.")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {e}")
+
+    return {"message": "HYSPLIT trajectory model run successfully."}
+
+
 
 
 
