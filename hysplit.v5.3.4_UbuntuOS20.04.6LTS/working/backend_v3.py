@@ -1,5 +1,3 @@
-# This code solves the problem of point and area source emission on top of transient and non-transient simulation handling
-
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import shutil
@@ -12,7 +10,7 @@ class HysplitInput(BaseModel):
     compute: str  # New field to determine computation type
     start_time: tuple
     num_locations: int
-    locations: list
+    locations: list  # Each location should now include emission rate and area
     run_time: int
     vert_motion_method: int
     top_of_model: float
@@ -45,39 +43,37 @@ class HysplitInput(BaseModel):
     interval: int
 
 def is_point_source(location):
-    return len(location) == 3
+    return len(location) == 4
 
 def is_area_source(location):
-    return len(location) == 6
+    return len(location) == 5  # Updated to include rate and area
 
-def generate_control_file(data: HysplitInput, output_file="CONTROL", current_time=None, run_time=1, sim_number=1):
+def generate_control_file(data: HysplitInput, output_file="CONTROL", current_time=None, run_time=None, sim_number=1):
     with open(output_file, "w") as file:
         if current_time:
             file.write(f"{current_time[0]:02d} {current_time[1]:02d} {current_time[2]:02d} {current_time[3]:02d}\n")
         else:
             file.write(f"{data.start_time[0]:02d} {data.start_time[1]:02d} {data.start_time[2]:02d} {data.start_time[3]:02d}\n")
         
-        # Include all sources (both area and point) in the CONTROL file
         file.write(f"{len(data.locations)}\n")
         
-        # Write area sources first
         for loc in data.locations:
             if is_area_source(loc):
-                file.write(f"{loc[0]:.6f} {loc[1]:.6f} {loc[2]:.1f}\n")
-        
-        # Then write point sources
-        for loc in data.locations:
-            if is_point_source(loc):
-                file.write(f"{loc[0]:.6f} {loc[1]:.6f} {loc[2]:.1f}\n")
+                lat, lon, height, rate, area = loc
+                file.write(f"{lat:.2f} {lon:.2f} {height:.1f} {rate:.1f} {area:.1f}\n")
+            elif is_point_source(loc):
+                lat, lon, height, rate = loc
+                file.write(f"{lat:.2f} {lon:.2f} {height:.1f} {rate:.1f} 0.0\n")
         
         file.write(f"{run_time if run_time is not None else data.run_time}\n")
         file.write(f"{data.vert_motion_method}\n")
         file.write(f"{data.top_of_model:.1f}\n")
         file.write(f"{data.num_met_files}\n")
         
+        met_files = data.met_filename.split(',')
         for i in range(data.num_met_files):
             file.write(f"{data.met_dir}\n")
-            file.write(f"{data.met_filename}\n")
+            file.write(f"{met_files[i].strip()}\n")
         
         file.write(f"{data.num_species}\n")
         file.write(f"{data.identification}\n")
@@ -89,12 +85,13 @@ def generate_control_file(data: HysplitInput, output_file="CONTROL", current_tim
         file.write(f"{data.grid_spacing[0]:.3f} {data.grid_spacing[1]:.3f}\n")
         file.write(f"{data.grid_span[0]:.1f} {data.grid_span[1]:.1f}\n")
         file.write(f"{data.output_dir}\n")
-        file.write(f"{data.output_filename}_{sim_number}\n")  # Append simulation number to output filename
+        file.write(f"{data.output_filename}_{sim_number}\n")
         file.write(f"{data.num_vert_levels}\n")
         file.write(f"{data.height_levels}\n")
         file.write(f"{data.sampling_start[0]:02d} {data.sampling_start[1]:02d} {data.sampling_start[2]:02d} {data.sampling_start[3]:02d} {data.sampling_start[4]:02d}\n")
         file.write(f"{data.sampling_stop[0]:02d} {data.sampling_stop[1]:02d} {data.sampling_stop[2]:02d} {data.sampling_stop[3]:02d} {data.sampling_stop[4]:02d}\n")
-    #  Calculate the appropriate avg_now_max value based on the interval
+        
+        # Calculate the appropriate avg_now_max value based on the interval
         interval_hours = data.interval // 60  # Convert minutes to hours
         avg_now_max = list(data.avg_now_max)  # Convert tuple to list for modification
         avg_now_max[1] = interval_hours  # Update the middle value      
@@ -115,7 +112,8 @@ def generate_traj_control_file(data: HysplitInput, output_file="CONTROL", sim_nu
         
         for loc in data.locations:
             if is_point_source(loc):
-                file.write(f"{loc[0]:.6f} {loc[1]:.6f} {loc[2]:.1f}\n")
+                lat, lon, height = loc
+                file.write(f"{lat:.6f} {lon:.6f} {height:.1f} 0.0 0.0\n")  # Area for point source is set to 0.0
         
         file.write(f"{data.run_time}\n")
         file.write(f"{data.vert_motion_method}\n")
@@ -145,14 +143,13 @@ def create_ascdata_cfg(output_file="ASCDATA.CFG"):
     with open(output_file, "w") as file:
         file.write(content)
 
-
 def create_setup_cfg(output_file: str = "SETUP.CFG"):
     """
     Creates SETUP.CFG file with the specified content.
     """
     content = """ &SETUP
  tratio = 0.75,
- initd = 0,
+ initd = 4,
  kpuff = 0,
  khmax = 9999,
  kmixd = 0,
@@ -162,11 +159,11 @@ def create_setup_cfg(output_file: str = "SETUP.CFG"):
  kbls = 1,
  kblt = 0,
  idsp = 1,
- conage = 24,
+ conage = 1,
  gemage = 48,
  numpar = 2500,
- qcycle = 1.0,
- efile = 'EMITIMES',
+ qcycle = 0.0,
+ efile = '',
  tkerd = 0.18,
  tkern = 0.18,
  hscale = 10800.0,
@@ -179,7 +176,7 @@ def create_setup_cfg(output_file: str = "SETUP.CFG"):
  poutf = 'PARDUMP',
  mgmin = 10,
  kmsl = 0,
- maxpar = 1000000,
+ maxpar = 10000,
  cpack = 1,
  cmass = 0,
  dxf = 1.0,
@@ -187,7 +184,7 @@ def create_setup_cfg(output_file: str = "SETUP.CFG"):
  dzf = 0.01,
  ichem = 0,
  maxdim = 1,
- kspl = 1,
+ kspl = 24,
  krnd = 6,
  frhs = 1.0,
  frvs = 0.01,
@@ -204,79 +201,45 @@ def create_setup_cfg(output_file: str = "SETUP.CFG"):
 
     print(f"✅ SETUP.CFG file '{output_file}' has been successfully created.")
 
-def create_emitimes(data: HysplitInput, output_file: str = "EMITIMES", current_time=None, duration=None):
-    area_sources = [loc for loc in data.locations if is_area_source(loc)]
+def create_labels_cfg(output_file: str = "LABELS.CFG"):
+    """
+    Creates LABELS.CFG file with the specified content.
+    """
+    content = """ 'TITLE&','NOAA HYSPLIT MODEL&'
+'MAPID&','Air Concentration&'
+'LAYER&','Average&'
+'UNITS&','Kg&'
+'VOLUM&','/m3&'
+'RELEASE&','enterlabel&'
+"""
     
-    if not area_sources:
-        print("No area sources found. EMITIMES file not created.")
-        return False
-
     with open(output_file, "w") as file:
-        file.write("YYYY MM DD HH    DURATION(hhhh) #RECORDS\n")
-        file.write("YYYY MM DD HH MM DURATION(hhmm) LAT LON HGT(m) RATE(/h) AREA(m2) HEAT(w)\n")
-        
-        if current_time:
-            year, month, day, hour = current_time
-        else:
-            year, month, day, hour = data.start_time
-        minute = 0  # Assuming minute is always 0, adjust if needed
-        
-        if duration is None:
-            duration = int(data.emission_hours * 60)  # Convert hours to minutes
-        else:
-            duration = int(duration * 60)  # Convert hours to minutes
-        
-        file.write(f"{year:04d} {month:02d} {day:02d} {hour:02d} 9999 {len(area_sources)}\n")
-        
-        for loc in area_sources:
-            lat, lon, height, length, width, angle = loc
-            area = length * width  # Calculate area
-            heat = 0.0  # Assuming heat is always 0, adjust if needed
-            
-            file.write(f"{year:04d} {month:02d} {day:02d} {hour:02d} {minute:02d} {duration:04d} "
-                       f"{lat:.6f} {lon:.6f} {height:.1f} {data.emission_rate:.1f} {area:.6f} {heat:.1f}\n")
+        file.write(content)
 
-    print(f"✅ EMITIMES file '{output_file}' has been successfully created.")
-    return True
-
-
+    print(f"✅ LABELS.CFG file '{output_file}' has been successfully created.")
 
 def run_hysplit(sim_number):
-
     try:
-
         subprocess.run("../exec/hycs_std", shell=True, check=True)
-
-        # Update the command to include the simulation number
-
-        subprocess.run(f"../exec/concplot -icdump_{sim_number} -a3", shell=True, check=True)
-
-        
+        subprocess.run(f"../exec/concplot -icdump_{sim_number} -a3 +a1 -c51 -v6::139000000+5::255000000+4::255165000+3::255255000+2::144238144+1::211211211", shell=True, check=True)
+        # subprocess.run("../exec/con2asc cdump_1 > output.txt")
+        # subprocess.run(f"../exec/concplot -icdump_{sim_number} -a3 +a1 -c51 -w1 -v6::139000000+5::255000000+4::255165000+3::255255000+2::144238144+1::211211211", shell=True, check=True)
 
         # Call the modify_kml script with the updated output filename
-
         input_kml = r"/home/oizom/Desktop/HYSPLIT/hysplit.v5.3.4_UbuntuOS20.04.6LTS/working/HYSPLIT_ps.kml"
-
         output_kml = f"/home/oizom/Desktop/HYSPLIT/hysplit.v5.3.4_UbuntuOS20.04.6LTS/working/modified_HYSPLIT_ps_{sim_number}.kml"
-
-        
 
         subprocess.run(["python", "modify_kml.py", input_kml, output_kml], check=True)  # Call the modify_kml script
 
-        
-
     except subprocess.CalledProcessError as e:
-
         raise HTTPException(status_code=500, detail=f"Error while running command: {e}")
 
     except FileNotFoundError:
-
         raise HTTPException(status_code=404, detail="One of the required files or programs is missing.")
 
     except Exception as e:
-
         raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {e}")
-    
+
 @app.post("/run_hysplit/")
 async def run_hysplit_model(data: HysplitInput):
     if data.compute.lower() == "conc":
@@ -288,11 +251,8 @@ async def run_hysplit_model(data: HysplitInput):
 
 async def run_dispersion_model(data: HysplitInput):
     create_ascdata_cfg()
-
-    emitimes_created = create_emitimes(data)
-
-    if emitimes_created:
-        create_setup_cfg()
+    create_setup_cfg()
+    create_labels_cfg()
 
     if data.transient_mode:
         generate_control_file(data, run_time=data.run_time, sim_number=1)
@@ -308,9 +268,6 @@ async def run_dispersion_model(data: HysplitInput):
             current_time = [current_datetime.year % 100, current_datetime.month, current_datetime.day, current_datetime.hour]
             run_time = min(data.interval // 60, (end_datetime - current_datetime).total_seconds() // 3600)
             
-            if emitimes_created:
-                create_emitimes(data, current_time=current_time, duration=run_time)
-            
             generate_control_file(data, current_time=current_time, run_time=run_time, sim_number=sim_number)
             run_hysplit(sim_number)
             
@@ -324,11 +281,7 @@ async def run_trajectory_model(data: HysplitInput):
     
     try:
         subprocess.run("../exec/hyts_std", shell=True, check=True)
-
         subprocess.run(f"../exec/trajplot -itdump -a3", shell=True, check=True)
-        
-        # You may want to add additional post-processing steps here
-        # For example, plotting the trajectory or converting the output to a specific format
         
     except subprocess.CalledProcessError as e:
         raise HTTPException(status_code=500, detail=f"Error while running trajectory model: {e}")
@@ -338,10 +291,6 @@ async def run_trajectory_model(data: HysplitInput):
         raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {e}")
 
     return {"message": "HYSPLIT trajectory model run successfully."}
-
-
-
-
 
 if __name__ == "__main__":
     import uvicorn
