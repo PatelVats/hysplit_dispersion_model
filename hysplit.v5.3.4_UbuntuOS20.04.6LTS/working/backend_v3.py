@@ -3,14 +3,95 @@ from pydantic import BaseModel
 import shutil
 import subprocess
 from datetime import datetime, timedelta
+from decimal import Decimal
 
 app = FastAPI()
 
+PREDEFINED_PROPERTIES = {
+    'p3': {
+        'particle_properties': (1.0, 1.35, 0.0),
+        'pollutant_props': (0.0, 0.0, 0.0, 0.0, 0.0),
+        'henry_constants': (0.0, 0.0, 0.0),
+        'radioactive_decay': 0.0,
+        'resuspension_factor': 0.000001
+    },
+    'p1': {
+        'particle_properties': (2.5, 1.61, 0.32),
+        'pollutant_props': (0.0, 0.0, 0.0, 0.0, 0.0),
+        'henry_constants': (0.0, 0.0, 0.0),
+        'radioactive_decay': 0.0,
+        'resuspension_factor': 0.000001
+    },
+    'p2': {
+        'particle_properties': (10.0, 1.73, 3.19),
+        'pollutant_props': (0.0, 0.0, 0.0, 0.0, 0.0),
+        'henry_constants': (0.0, 0.0, 0.0),
+        'radioactive_decay': 0.0,
+        'resuspension_factor': 0.000001
+    },
+    'g2': {
+        'particle_properties': (0.0, 0.00125, 0.0),
+        'pollutant_props': (28.010, 0.0, 0.0, 0.0, 0.0),
+        'henry_constants': (0.000971, 0.0, 0.0),
+        'radioactive_decay': 0.0,
+        'resuspension_factor': 0.0
+    },
+    'g1': {
+        'particle_properties': (0.0, 0.001977, 0.0),
+        'pollutant_props': (44.0, 0.0, 0.0, 0.0, 0.0),
+        'henry_constants': (167000000.0, 0.0, 0.0),  # Converted from 1.67e8
+        'radioactive_decay': 0.0,
+        'resuspension_factor': 0.0
+    },
+    'g8': {
+        'particle_properties': (0.0, 1.434, 0.0),
+        'pollutant_props': (64.066, 0.0, 0.0, 0.0, 0.0),
+        'henry_constants': (1.47, 0.0, 0.0),
+        'radioactive_decay': 0.0,
+        'resuspension_factor': 0.0
+    },
+    'g3': {
+        'particle_properties': (0.0, 0.001880, 0.0),
+        'pollutant_props': (0.00550000, 0.0, 0.0, 0.0, 0.0),
+        'henry_constants': (0.012, 0.0, 0.0),
+        'radioactive_decay': 0.0,
+        'resuspension_factor': 0.0
+    },
+    'g5': {
+        'particle_properties': (0.0, 0.002144, 0.0),
+        'pollutant_props': (47.997, 0.0, 0.0, 0.0, 0.0),
+        'henry_constants': (0.0, 0.0, 0.0),
+        'radioactive_decay': 0.0,
+        'resuspension_factor': 0.0
+    },
+    'g6': {
+        'particle_properties': (0.0, 0.001539, 0.0),
+        'pollutant_props': (34.08, 0.0, 0.0, 0.0, 0.0),
+        'henry_constants': (0.0, 0.0, 0.0),
+        'radioactive_decay': 0.0,
+        'resuspension_factor': 0.0
+    },
+    'g7': {
+        'particle_properties': (0.0, 0.00125, 0.0),
+        'pollutant_props': (30.00610, 0.0, 0.0, 0.0, 0.0),
+        'henry_constants': (0.0, 0.0, 0.0),
+        'radioactive_decay': 0.0,
+        'resuspension_factor': 0.0
+    },
+    'test': {
+        'particle_properties': (0.0, 0.00125, 0.0),
+        'pollutant_props': (.0610, 0.0, 0.0, 0.0, 0.0),
+        'henry_constants': (0.0, 0.0, 0.0),
+        'radioactive_decay': 0.0,
+        'resuspension_factor': 0.0
+    }
+}
+
 class HysplitInput(BaseModel):
-    compute: str  # New field to determine computation type
+    compute: str
     start_time: tuple
     num_locations: int
-    locations: list  # Each location should now include emission rate and area
+    locations: list
     run_time: int
     vert_motion_method: int
     top_of_model: float
@@ -34,11 +115,7 @@ class HysplitInput(BaseModel):
     sampling_stop: tuple
     avg_now_max: tuple
     num_species_dep: int
-    particle_properties: tuple
-    pollutant_props: tuple
-    henry_constants: tuple
-    radioactive_decay: float
-    resuspension_factor: float
+    properties_key: str  # New field to specify which predefined properties to use
     transient_mode: bool
     interval: int
 
@@ -49,6 +126,10 @@ def is_area_source(location):
     return len(location) == 5  # Updated to include rate and area
 
 def generate_control_file(data: HysplitInput, output_file="CONTROL", current_time=None, run_time=None, sim_number=1):
+    properties = PREDEFINED_PROPERTIES.get(data.properties_key)
+    if not properties:
+        raise HTTPException(status_code=400, detail=f"Invalid properties key: {data.properties_key}")
+
     with open(output_file, "w") as file:
         if current_time:
             file.write(f"{current_time[0]:02d} {current_time[1]:02d} {current_time[2]:02d} {current_time[3]:02d}\n")
@@ -96,12 +177,14 @@ def generate_control_file(data: HysplitInput, output_file="CONTROL", current_tim
         avg_now_max = list(data.avg_now_max)  # Convert tuple to list for modification
         avg_now_max[1] = interval_hours  # Update the middle value      
         file.write(f"{avg_now_max[0]:02d} {avg_now_max[1]:02d} {avg_now_max[2]:02d}\n")
+        
+        # Use the predefined properties
         file.write(f"{data.num_species_dep}\n")
-        file.write(f"{data.particle_properties[0]:.1f} {data.particle_properties[1]:.1f} {data.particle_properties[2]:.1f}\n")
-        file.write(f"{' '.join(map(str, data.pollutant_props))}\n")
-        file.write(f"{' '.join(map(str, data.henry_constants))}\n")
-        file.write(f"{data.radioactive_decay:.1f}\n")
-        file.write(f"{data.resuspension_factor:.1f}\n")
+        file.write(f"{properties['particle_properties'][0]:.8f} {properties['particle_properties'][1]:.8f} {properties['particle_properties'][2]:.8f}\n")
+        file.write(" ".join(f"{Decimal(str(prop)):.8f}" for prop in properties['pollutant_props']) + "\n")
+        file.write(" ".join(f"{Decimal(str(const)):.8f}" for const in properties['henry_constants']) + "\n")
+        file.write(f"{Decimal(str(properties['radioactive_decay'])):.8f}\n")
+        file.write(f"{Decimal(str(properties['resuspension_factor'])):.8f}\n")
 
     shutil.copy(output_file, "default_conc")
 
