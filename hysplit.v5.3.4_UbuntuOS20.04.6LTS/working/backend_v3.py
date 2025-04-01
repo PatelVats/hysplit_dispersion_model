@@ -465,7 +465,7 @@ oizom@oizom-OptiPlex-3060:~/Desktop/HYSPLIT/hysplit.v5.3.4_UbuntuOS20.04.6LTS/wo
   "release_start": [0, 0, 0, 0, 0],
   "num_grids": 1,
   "grid_center": [25.269421, 55.337341],
-  "grid_spacing": [0.001, 0.001],
+  "grid_spacing": [0.05, 0.05],
   "grid_span": [5.0, 5.0],
   "output_dir": "./",
   "output_filename": "cdump",
